@@ -77,9 +77,6 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final authProvider = Provider.of<AuthProvider>(context);
-
     return Form(
       child: Column(
         children: const [
@@ -115,7 +112,7 @@ class _TextFormEmail extends StatelessWidget {
     authProvider.email = Preferences.email; // para que ya tenga el valor del email a la hora de pulsar el login
 
     return TextFormField(
-      initialValue: Preferences.email ?? '',
+      initialValue: Preferences.email,
       autocorrect: false,
       decoration: _buildInputDecoration(context),
       onChanged: (value) => authProvider.email = value,
@@ -151,10 +148,6 @@ class _TextFormEmail extends StatelessWidget {
       labelText: 'Correo electrónico',
       hintText: 'ejemplo@gmail.com',
     );
-  }
-
-  Future<String?> _loadEmail() async {
-    return await Preferences.email;
   }
 }
 
@@ -229,20 +222,15 @@ class _ElevatedButton extends StatelessWidget {
               FocusScope.of(context).unfocus();
               // final authService = Provider.of<AuthService>(context, listen: false);
               // final authProvider = Provider.of<AuthProvider>(context, listen: false);
-              print('email0: ' + authProvider.email);
               final String? errorMessage = await authService.login(authProvider.email, authProvider.password);
-              print('email01: ' + authProvider.email);
               if(errorMessage == null){
-                print('email02: ' + authProvider.email);
+                Preferences.email = authProvider.email;
                 authProvider.isLoading = true;
                 Position location = await _getCurrentLocation();
-                print('email03: ' + authProvider.email);
                 authProvider.loginLat = location.latitude;
                 authProvider.loginLong = location.longitude;
-                print('email04: ' + authProvider.email);
                 authProvider.loginLocation = await _getCurrentAddress(authProvider.loginLat, authProvider.loginLong);
-                print('email1: ' + authProvider.email);
-                Preferences.email = authProvider.email;
+                authProvider.isLoading = false;
                 Navigator.pushReplacementNamed(context, 'home'); //para no poder volver atras
               } else{
                 authProvider.isLoading = false;
