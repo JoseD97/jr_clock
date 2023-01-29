@@ -7,63 +7,50 @@ import '../providers/providers.dart';
 
 class ClockInFirestore{
 
-  // static int _cont = 1;  // TODO PARA LLEVAR LA CUENTA DE VARIOS REGISTROS -> STREAM BUILDER CON LISTVIEW DE CARTAS CUADRADAS QUE MUESTRAN
-  //                        // TODO LOS DIFERENTES FICHAJES EN UN MISMO DIA -> ESTO ME SIRVE PARA EL HISTORIAL
-  //
-  // static int get cont{
-  //   return _cont;
-  // }
+  static int _cont = 1;
 
-  // Create new document for each day
-  static Future createDocument() async{
-    final now = DateTime.now();
-    final doc = '${now.month}-${now.day}';
-    final day = now.day;
-    final month = now.month;
-
-    //_cont = 1; // reset contador
-
-    final clockIn = FirebaseFirestore.instance.collection(Preferences.email).doc(doc);
-    final json = <String, dynamic>{
-      "day": day,
-      "month": month,
-      "hourIn": '-',
-      "locationIn": '-',
-      "locationOut": '-',
-      'isWorking': '',
-    };
-    //Create document and write
-    await clockIn.set(json);
-    print('grabado firebase');
+  static int get cont{
+    return _cont;
   }
 
-
-  // Enter work
-  static Future enterWork(BuildContext context) async{
+  // Graba la entrada al trabajo
+  static Future enterWork(BuildContext context) async {
     final now = DateTime.now();
-    final doc = '${now.month}-${now.day}';
+    final day = now.day;
+    final month = now.month;
     final time = DateFormat('kk:mm').format(now).toString();
+
+
+    print(Preferences.lastDayWorked);
+    print(day);
+    if (Preferences.lastDayWorked != day){ // Resetea el contador cada nuevo dia
+      _cont = 1;
+      Preferences.isWorking = false;
+    }
+    final doc = '${now.month}-${now.day}-$_cont';
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     Preferences.isWorking = !Preferences.isWorking; // Change his/her work's state
     // Create the new collection for the new user
     final clockIn = FirebaseFirestore.instance.collection(Preferences.email).doc(doc);
     final json = <String, dynamic>{
-      //"hourIn${_cont}": time, hola
+      "day": day,
+      "month": month,
       "hourIn": time,
-      "houtOut": '',
+      "hourOut": '-',
       "locationIn": authProvider.loginLocation,
+      "locationOut": '-',
       'isWorking': Preferences.isWorking,
     };
     //Create document and write
-    await clockIn.update(json);
-    //_cont++;
+    await clockIn.set(json);
   }
 
-  // Leave work
+  // Graba la salida del trabajo
   static Future leaveWork(BuildContext context) async{
     final now = DateTime.now();
-    final doc = '${now.month}-${now.day}';
+    final day = now.day;
+    final doc = '${now.month}-${now.day}-$_cont';
     final time = DateFormat('kk:mm').format(now).toString();
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -79,5 +66,7 @@ class ClockInFirestore{
     // Update the document
     await clockIn.update(json);
     print('grabado firebase');
+    _cont++;
+    Preferences.lastDayWorked = day;
   }
 }

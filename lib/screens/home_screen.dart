@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    print('email ' + Preferences.email);
+    print('email2 ' + Preferences.email);
 
     return Scaffold(
       body: Container(
@@ -256,7 +256,10 @@ class _TimeClockIn extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final now = DateTime.now();
-    final doc = '${now.month}-${now.day}';
+    var cont = ClockInFirestore.cont;
+    if(cont > 1) cont--; // para que seleccione el documento anterior
+    final doc = '${now.month}-${now.day}-${cont}';
+    print('doc $doc');
 
     return Row(
       children: [
@@ -282,7 +285,7 @@ class _TimeClockIn extends StatelessWidget {
                     ],
                   );
                 } else{
-                  ClockInFirestore.createDocument();
+                  //ClockInFirestore.createDocument();
                   return Column(
                     children: const [
                       Text('  -  '),
@@ -292,7 +295,7 @@ class _TimeClockIn extends StatelessWidget {
                   );
                 }
               } else{
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator.adaptive(valueColor:AlwaysStoppedAnimation<Color>(Colors.black87)));
               }
             }
 

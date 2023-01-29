@@ -6,6 +6,7 @@ class Preferences{
 
   static String _email = '';
   static bool _isWorking = false;
+  static int _lastDayWorked = 0;
 
   static Future initPreferences() async{
     _prefs = await SharedPreferences.getInstance();
@@ -13,12 +14,23 @@ class Preferences{
 
   // Email
   static String get email{
-    return _prefs.getString('email') ?? '';
+    return _prefs.getString('email') ?? _email;
   }
   static set email(String email){
     _email = email;
     _prefs.setString('email', _email);
   }
+
+
+  // Last day worked
+  static int get lastDayWorked{
+    return _prefs.getInt('lastDayWorked') ?? _lastDayWorked;
+  }
+  static set lastDayWorked(int lastDayWorked){
+    _lastDayWorked = lastDayWorked;
+    _prefs.setInt('lastDayWorked', _lastDayWorked);
+  }
+
 
   // Is working
   static bool get isWorking{

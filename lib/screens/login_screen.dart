@@ -217,6 +217,7 @@ class _ElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final authProvider = Provider.of<AuthProvider>(context);
+    final authService = Provider.of<AuthService>(context, listen: false);
 
     return SizedBox(
       height: 55,
@@ -226,17 +227,21 @@ class _ElevatedButton extends StatelessWidget {
             ? null // Bloquea el boton mientras carga datos de firebase
             : ()  async {
               FocusScope.of(context).unfocus();
-              final authService = Provider.of<AuthService>(context, listen: false);
-              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              // final authService = Provider.of<AuthService>(context, listen: false);
+              // final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              print('email0: ' + authProvider.email);
               final String? errorMessage = await authService.login(authProvider.email, authProvider.password);
-
+              print('email01: ' + authProvider.email);
               if(errorMessage == null){
+                print('email02: ' + authProvider.email);
                 authProvider.isLoading = true;
                 Position location = await _getCurrentLocation();
+                print('email03: ' + authProvider.email);
                 authProvider.loginLat = location.latitude;
                 authProvider.loginLong = location.longitude;
+                print('email04: ' + authProvider.email);
                 authProvider.loginLocation = await _getCurrentAddress(authProvider.loginLat, authProvider.loginLong);
-                print(authProvider.email);
+                print('email1: ' + authProvider.email);
                 Preferences.email = authProvider.email;
                 Navigator.pushReplacementNamed(context, 'home'); //para no poder volver atras
               } else{
