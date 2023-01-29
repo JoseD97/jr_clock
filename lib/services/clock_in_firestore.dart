@@ -49,7 +49,7 @@ class ClockInFirestore{
     // Create the new collection for the new user
     final clockIn = FirebaseFirestore.instance.collection(Preferences.email).doc(doc);
     final json = <String, dynamic>{
-      //"hourIn${_cont}": time,
+      //"hourIn${_cont}": time, hola
       "hourIn": time,
       "houtOut": '',
       "locationIn": authProvider.loginLocation,
