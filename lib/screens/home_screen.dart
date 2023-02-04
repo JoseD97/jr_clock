@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import 'package:jr_clock/services/notifications_service.dart';
 import 'package:jr_clock/services/services.dart';
+import 'package:jr_clock/widgets/profile_image.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -78,23 +78,13 @@ class _TopBlackBox extends StatelessWidget {
         child: Row(
           children: [
             // Profile Image
-            const ClipOval( //TODO AÑADIR BOLA PARA SABER SI ESTA TRABAJANDO O NO
-              child: FadeInImage(
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-                placeholder: AssetImage('assets/blank-profile.png'),
-                image: NetworkImage(
-                    'https://www.semana.com/resizer/fTo3TLRNuIi_JIOiSoLBhqVz1yw=/1920x0/smart/filters:format(jpg):quality(80)/cloudfront-us-east-1.images.arcpublishing.com/semana/HGVAZXW4YNG2FJIETGXXGBVEPE.JPG'),
-              ),
-            ),
-
+            ProfileImage(height: 100, width: 100,),
 
             // Name and role from Firebase
             const SizedBox(width: 20,),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection(Preferences.email).doc('info').snapshots(),
+                stream: FirebaseFirestore.instance.collection('users').doc(Preferences.email).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
@@ -131,6 +121,64 @@ class _TopBlackBox extends StatelessWidget {
     );
   }
 }
+
+
+class _HomeBody extends StatelessWidget {
+  const _HomeBody({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+          padding: const EdgeInsets.all(20),
+          width: double.infinity,
+          decoration: _buildBoxDecorationBody(),
+          child: Column(
+            children: [
+              const SizedBox(height: 20,),
+              const _ClockInSection(),
+
+              const SizedBox(height: 30,),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(8),
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    Card(
+                      child: ListTile(
+                        onTap: () => Navigator.pushNamed(context, 'historic'),
+                        title: const Text('Historial de fichajes'),
+                        leading: const Icon(Icons.history),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                      ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        onTap: () => Navigator.pushNamed(context, 'profile'),
+                        title: const Text('Perfil'),
+                        leading: const Icon(Icons.person_rounded),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          )
+      ),
+    );
+  }
+
+  BoxDecoration _buildBoxDecorationBody() {
+    return const BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25)),
+
+    );
+  }
+
+}
+
 
 class _ClockInSection extends StatelessWidget {
   const _ClockInSection({
@@ -181,7 +229,7 @@ class _ClockInSection extends StatelessWidget {
                 ),
                 CurrentLocationLayer(
                   style: const LocationMarkerStyle(
-                    showHeadingSector: false
+                      showHeadingSector: false
                   ),
                 ), // quitar la sombra de para donde esta mirando
               ],
@@ -199,12 +247,12 @@ class _ClockInSection extends StatelessWidget {
             onPressed: authClockIn.isLoading
                 ? null
                 : () {
-                  authClockIn.isLoading = true;
-                  if(Preferences.isWorking) ClockInFirestore.leaveWork(context);
-                  else ClockInFirestore.enterWork(context);  // TODO poner que se esperar a confirmar la grabacion
-                  NotificationsService.showSnackbar('Fichaje completado'); // todo si no hay error
-                  authClockIn.isLoading = false;
-                },
+              authClockIn.isLoading = true;
+              if(Preferences.isWorking) ClockInFirestore.leaveWork(context);
+              else ClockInFirestore.enterWork(context);  // TODO poner que se esperar a confirmar la grabacion
+              NotificationsService.showSnackbar('Fichaje completado'); // todo si no hay error
+              authClockIn.isLoading = false;
+            },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
@@ -212,10 +260,10 @@ class _ClockInSection extends StatelessWidget {
             ),
             child: authClockIn.isLoading
                 ? const SizedBox(
-                    height: 10,
-                    width: 10,
-                    child: CircularProgressIndicator.adaptive(strokeWidth: 3, valueColor:AlwaysStoppedAnimation<Color>(Colors.white)),
-                  )
+                  height: 10,
+                  width: 10,
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 3, valueColor:AlwaysStoppedAnimation<Color>(Colors.white)),
+                )
                 : const Text('Fichar', style: TextStyle(fontSize: 20)),
           ),
         ),
@@ -257,107 +305,52 @@ class _TimeClockIn extends StatelessWidget {
 
     final now = DateTime.now();
     var cont = ClockInFirestore.cont;
+    print('cont'+ cont.toString());
     if(cont > 1) cont--; // para que seleccione el documento anterior
-    final doc = '${now.month}-${now.day}-${cont}';
+    final doc = '${now.month}-${now.day}-${cont.toString()}';
     print('doc $doc');
 
     return Row(
-      children: [
-        Column(
-        children: const [
-          Icon(Icons.arrow_forward_outlined, color: Colors.green,),
-          Icon(Icons.arrow_back_outlined, color: Colors.redAccent,),
-        ],
-        ),
-
-        const SizedBox(width: 10),
-
-        StreamBuilder(
-            stream: FirebaseFirestore.instance.collection(Preferences.email).doc(doc).snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData ) {  // si el documento tiene datos
-                if(snapshot.data!.exists){  // si el documento existe
-                  return Column(
-                    children: [
-                      Text(snapshot.data!["hourIn"].toString()),
-                      const SizedBox(height: 6),
-                      Text(snapshot.data!["hourOut"].toString()),
-                    ],
-                  );
-                } else{
-                  //ClockInFirestore.createDocument();
-                  return Column(
-                    children: const [
-                      Text('  -  '),
-                      SizedBox(height: 6),
-                      Text('  -  '),
-                    ],
-                  );
-                }
-              } else{
-                return const Center(child: CircularProgressIndicator.adaptive(valueColor:AlwaysStoppedAnimation<Color>(Colors.black87)));
-              }
-            }
-
-        ),
-      ]
-    );
-  }
-}
-
-
-class _HomeBody extends StatelessWidget {
-  const _HomeBody({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-          padding: const EdgeInsets.all(20),
-          width: double.infinity,
-          decoration: _buildBoxDecorationBody(),
-          child: Column(
-            children: [
-              const SizedBox(height: 20,),
-              const _ClockInSection(),
-
-              const SizedBox(height: 30,),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(8),
-                  children: [
-                    Card(
-                      child: ListTile(
-                        onTap: () => Navigator.pushReplacementNamed(context, 'historic'),
-                        title: const Text('Historial de fichajes'),
-                        leading: const Icon(Icons.history),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                      ),
-                    ),
-                    Card(
-                      child: ListTile(
-                        onTap: () {},
-                        title: const Text('Perfil'),
-                        leading: const Icon(Icons.settings),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                      ),
-                    ),
-                  ],
-                ),
-              )
+        children: [
+          Column(
+            children: const [
+              Icon(Icons.arrow_forward_outlined, color: Colors.green,),
+              Icon(Icons.arrow_back_outlined, color: Colors.redAccent,),
             ],
-          )
-      ),
+          ),
+
+          const SizedBox(width: 10),
+
+          StreamBuilder(
+              stream: FirebaseFirestore.instance.collection(Preferences.email).doc(doc).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData ) {  // si el documento tiene datos
+                  if(snapshot.data!.exists){  // si el documento existe
+                    return Column(
+                      children: [
+                        Text(snapshot.data!["hourIn"].toString()),
+                        const SizedBox(height: 6),
+                        Text(snapshot.data!["hourOut"].toString()),
+                      ],
+                    );
+                  } else{
+                    //ClockInFirestore.createDocument();
+                    return Column(
+                      children: const [
+                        Text('  -  '),
+                        SizedBox(height: 6),
+                        Text('  -  '),
+                      ],
+                    );
+                  }
+                } else{
+                  return const Center(child: CircularProgressIndicator.adaptive(valueColor:AlwaysStoppedAnimation<Color>(Colors.black87)));
+                }
+              }
+
+          ),
+        ]
     );
   }
-
-  BoxDecoration _buildBoxDecorationBody() {
-    return const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25)),
-
-    );
-  }
-
 }
 

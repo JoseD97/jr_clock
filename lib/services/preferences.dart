@@ -5,6 +5,7 @@ class Preferences{
   static late SharedPreferences _prefs;
 
   static String _email = '';
+  static String _fotoId = '';
   static bool _isWorking = false;
   static int _lastDayWorked = 0;
 
@@ -19,8 +20,20 @@ class Preferences{
   static set email(String email){
     _email = email;
     _prefs.setString('email', _email);
+    fotoId = email; //Sets de foto id with the email to be unique
   }
 
+
+  // FotoId
+  static String get fotoId{
+    return _prefs.getString('fotoId') ?? _fotoId;
+  }
+  static set fotoId(String email){
+    final id = email.split('@');
+    _fotoId = id[0].trim();
+    _prefs.setString('fotoId', _fotoId);
+
+  }
 
   // Last day worked
   static int get lastDayWorked{

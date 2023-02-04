@@ -12,4 +12,5 @@ class AuthClockIn extends ChangeNotifier{
     this._isLoading = value;
     notifyListeners();
   }
+
 }

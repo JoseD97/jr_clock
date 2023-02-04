@@ -112,6 +112,7 @@ class _TextFormEmail extends StatelessWidget {
     authProvider.email = Preferences.email; // para que ya tenga el valor del email a la hora de pulsar el login
 
     return TextFormField(
+      cursorColor: Theme.of(context).primaryColor,
       initialValue: Preferences.email,
       autocorrect: false,
       decoration: _buildInputDecoration(context),
@@ -164,6 +165,7 @@ class _TextFormPassword extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return TextFormField(
+      cursorColor: Theme.of(context).primaryColor,
       autocorrect: false,
       obscureText: authProvider.isObscured,
       onChanged: (value) => authProvider.password = value,
@@ -188,7 +190,6 @@ class _TextFormPassword extends StatelessWidget {
               width: 1
           )
       ),
-
       prefixIcon: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor,),
       labelStyle: TextStyle(color: Theme.of(context).primaryColor),
       labelText: 'Contraseña',
@@ -286,25 +287,3 @@ class _ElevatedButton extends StatelessWidget {
   }
 }
 
-
-
-// Check box
-// class _CheckBoxListTile extends StatelessWidget {
-//   const _CheckBoxListTile({
-//     Key? key,
-//     required this.authProvider,
-//   }) : super(key: key);
-//
-//   final AuthProvider authProvider;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return CheckboxListTile(
-//       controlAffinity: ListTileControlAffinity.leading,
-//       activeColor: Colors.black87,
-//       title: const Text('Recordar correo electrónico'),
-//       value: Preferences.rememberEmail ? true : authProvider.rememberEmail,
-//       onChanged: (value) => authProvider.rememberEmail = value!,
-//     );
-//   }
-//}

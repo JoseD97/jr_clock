@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jr_clock/services/services.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class ClockInFirestore{
     final now = DateTime.now();
     final day = now.day;
     final month = now.month;
+    final year = now.year;
     final time = DateFormat('kk:mm').format(now).toString();
 
 
@@ -36,6 +38,7 @@ class ClockInFirestore{
     final json = <String, dynamic>{
       "day": day,
       "month": month,
+      "year":year,
       "hourIn": time,
       "hourOut": '-',
       "locationIn": authProvider.loginLocation,
@@ -69,4 +72,12 @@ class ClockInFirestore{
     _cont++;
     Preferences.lastDayWorked = day;
   }
+
+  static Future<String?> getImageUrl() async {
+    final fotoId = await Preferences.fotoId;
+    final ref = FirebaseStorage.instance.ref().child('$fotoId.jpg');
+    final url = await ref.getDownloadURL();
+    return url;
+  }
+
 }

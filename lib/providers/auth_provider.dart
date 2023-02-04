@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class AuthProvider extends ChangeNotifier{
 
   String name = '';
+  String lastName = '';
   String email = '';
   String password = '';
   String loginLocation = '';
@@ -11,6 +12,7 @@ class AuthProvider extends ChangeNotifier{
   double loginLat = 0;
   bool _isObscured = true;
   bool _isLoading = false;
+
   String _dropDownItem = 'Rol';
 
   bool get isObscured{

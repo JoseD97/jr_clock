@@ -27,8 +27,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => HistoricProvider()),
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => AuthClockIn()),
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: true,
@@ -41,8 +43,7 @@ class MyApp extends StatelessWidget {
           'register': (_) => const RegisterScreen(),
           'home': (_) => const HomeScreen(),
           'historic': (_) => const HistoricScreen(),
-
-
+          'profile': (_) => const ProfileScreen(),
         },
         //theme: ,
       ),
