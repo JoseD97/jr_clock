@@ -246,12 +246,33 @@ class _ClockInSection extends StatelessWidget {
           child: ElevatedButton(
             onPressed: authClockIn.isLoading
                 ? null
-                : () {
+                : () async {
               authClockIn.isLoading = true;
-              if(Preferences.isWorking) ClockInFirestore.leaveWork(context);
-              else ClockInFirestore.enterWork(context);  // TODO poner que se esperar a confirmar la grabacion
-              NotificationsService.showSnackbar('Fichaje completado'); // todo si no hay error
-              authClockIn.isLoading = false;
+              final now = DateTime.now();
+              var data = await ClockInFirestore.getDataLastDocument();
+              print('tras pulsar el boton');
+              print('countttttttttt ' + data['countPerDay'].toString());
+              print('iswoerking ' + data['isWorking'].toString());
+              print('/tras pulsar el boton');
+
+              if (data['day'] != now.day){ // Comprobacion por si el ultimo dia se le olvido fichar la salida
+                ClockInFirestore.enterWork(context);
+                NotificationsService.showSnackbar('Entrada fichada');
+                authClockIn.isLoading = false;
+              }
+              else{
+                if(data['isWorking']) {
+                  await ClockInFirestore.leaveWork(context);
+                  NotificationsService.showSnackbar('Salida fichada');
+                  authClockIn.reloadStreamBuilder = false;
+                } else {
+                  await ClockInFirestore.enterWork(context);
+                  NotificationsService.showSnackbar('Entrada fichada'); // todo si no hay error
+                  authClockIn.reloadStreamBuilder = true;
+                }  // TODO poner que se esperar a confirmar la grabacion
+
+                authClockIn.isLoading = false;
+              }
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
@@ -290,7 +311,7 @@ class _DayClockIn extends StatelessWidget {
       children: [
         Text(now.day.toString(), style: const TextStyle(fontSize: 35),),
         const SizedBox(width: 10,),
-        Text(DateFormat('MMMM','es').format(now).toString()), //TODO CAMBIAR EL MES
+        Text(DateFormat('MMMM','es').format(now).toString()),
       ],
     );
   }
@@ -299,15 +320,18 @@ class _DayClockIn extends StatelessWidget {
 
 class _TimeClockIn extends StatelessWidget {
   const _TimeClockIn({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
 
+    final authClockIn = Provider.of<AuthClockIn>(context);
+    Stream myStream = currentSigningStream();
+    if(authClockIn.reloadStreamBuilder) myStream = currentSigningStream();
+
     final now = DateTime.now();
-    var cont = ClockInFirestore.cont;
-    print('cont'+ cont.toString());
-    if(cont > 1) cont--; // para que seleccione el documento anterior
-    final doc = '${now.month}-${now.day}-${cont.toString()}';
+    var count = ClockInFirestore.count;
+    print('cont'+ count.toString());
+    if(count > 1) count--; // para que seleccione el documento anterior
+    final doc = '${now.year}-${now.month}-${now.day}-${count.toString()}';
     print('doc $doc');
 
     return Row(
@@ -322,7 +346,8 @@ class _TimeClockIn extends StatelessWidget {
           const SizedBox(width: 10),
 
           StreamBuilder(
-              stream: FirebaseFirestore.instance.collection(Preferences.email).doc(doc).snapshots(),
+              //initialData: await ClockInFirestore.getIDLastDocument();,
+              stream: myStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData ) {  // si el documento tiene datos
                   if(snapshot.data!.exists){  // si el documento existe
@@ -351,6 +376,14 @@ class _TimeClockIn extends StatelessWidget {
           ),
         ]
     );
+  }
+
+
+  Stream currentSigningStream() async* {
+
+    final lastId = await ClockInFirestore.getIDLastDocument();
+    print('lastid>>>>>>>' + lastId);
+    yield* FirebaseFirestore.instance.collection(Preferences.email).doc(lastId).snapshots();
   }
 }
 
