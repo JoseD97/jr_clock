@@ -45,24 +45,33 @@ dependencies:
   geocoding: ^2.0.5
   geolocator: ^9.0.2
   flutter_map_location_marker: ^5.1.0+1
-  flutter_native_splash: ^2.2.17
+  flutter_native_splash: ^2.2.16
   firebase_storage: ^11.0.10
 
 
+
 flutter_native_splash:
-  color: "#2a2b2a"
+  color: "#FFFFFF"
   image: assets/jrlogo.png
   android: true
   android12: true
   ios: true
   android_12:
-    image: assets/jrlogo.png
-    icon_background_color: "#FFFFFF"
-    color: "#2a2b2a"
+    image: assets/jrlogo12.png
+    #icon_background_color: "#FFFFFF"
+    color: "#FFFFFF"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: ^0.11.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/jrlogo.png"
+  min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

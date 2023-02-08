@@ -111,19 +111,19 @@ class _HomeBody extends StatelessWidget {
                     if (snapshot.hasData ) {  // TODO PONER MENSAJE SI NO SE RECIBE NINGUN DATO y el HAS.ERROR por errores de conexion
                       return Expanded(
                         child: ListView.builder(
-                          padding: EdgeInsets.all(10),
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder:(context, index){
-                            return CustomCardHistoric(
-                              day: snapshot.data!.docs[index]['day'].toString(),
-                              month: snapshot.data!.docs[index]['month'].toString(),
-                              year: snapshot.data!.docs[index]['year'].toString(),
-                              hourIn: snapshot.data!.docs[index]['hourIn'].toString(),
-                              hourOut: snapshot.data!.docs[index]['hourOut'].toString(),
-                              locationIn: snapshot.data!.docs[index]['locationIn'].toString(),
-                              locationOut: snapshot.data!.docs[index]['locationOut'].toString(),
-                            );
-                          }
+                            padding: EdgeInsets.all(10),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder:(context, index){
+                              return CustomCardHistoric(
+                                day: snapshot.data!.docs[index]['day'].toString(),
+                                month: snapshot.data!.docs[index]['month'].toString(),
+                                year: snapshot.data!.docs[index]['year'].toString(),
+                                hourIn: snapshot.data!.docs[index]['hourIn'].toString(),
+                                hourOut: snapshot.data!.docs[index]['hourOut'].toString(),
+                                locationIn: snapshot.data!.docs[index]['locationIn'].toString(),
+                                locationOut: snapshot.data!.docs[index]['locationOut'].toString(),
+                              );
+                            }
                         ),
                       );
                     } else return const CircularProgressIndicator.adaptive(strokeWidth: 3, valueColor:AlwaysStoppedAnimation<Color>(Colors.white));
@@ -199,11 +199,11 @@ class _Filter extends StatelessWidget {
                 : () {
               // if(historicProvider.month == '' && historicProvider.year == '') null; // bloquea boton si no se han introducido filtros
               // else{
-                FocusScope.of(context).unfocus();
-                historicProvider.showData = true;
-                historicProvider.isSearching = true;
-                //TODO poner logica -> activar el stream builder
-                historicProvider.isSearching = false;
+              FocusScope.of(context).unfocus();
+              historicProvider.showData = true;
+              historicProvider.isSearching = true;
+              //TODO poner logica -> activar el stream builder
+              historicProvider.isSearching = false;
               // }
             },
             style: ElevatedButton.styleFrom(
@@ -217,11 +217,11 @@ class _Filter extends StatelessWidget {
             ),
             child: historicProvider.isSearching
                 ? const SizedBox(
-                  height: 10,
-                  width: 10,
-                  child: CircularProgressIndicator.adaptive(strokeWidth: 3,
+              height: 10,
+              width: 10,
+              child: CircularProgressIndicator.adaptive(strokeWidth: 3,
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-                )
+            )
                 : const Text('Buscar', style: TextStyle(fontSize: 20)),
           ),
         )
@@ -253,6 +253,5 @@ class _Filter extends StatelessWidget {
     );
   }
 }
-
 
 

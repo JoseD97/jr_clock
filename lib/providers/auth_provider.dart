@@ -15,6 +15,7 @@ class AuthProvider extends ChangeNotifier{
 
   String _dropDownItem = 'Rol';
 
+  // Password
   bool get isObscured{
     return this._isObscured;
   }
@@ -23,7 +24,7 @@ class AuthProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-
+  // Login/register
   bool get isLoading{
     return this._isLoading;
   }
@@ -40,7 +41,6 @@ class AuthProvider extends ChangeNotifier{
     this._dropDownItem = value;
     notifyListeners();
   }
-
 
 
 }

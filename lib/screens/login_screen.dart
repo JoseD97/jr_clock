@@ -91,7 +91,6 @@ class _LoginForm extends StatelessWidget {
           SizedBox(height: 25,),
           _ElevatedButton(),
 
-          //_CheckBoxListTile(authProvider: authProvider)
         ],
       ),
 
@@ -109,7 +108,7 @@ class _TextFormEmail extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final authProvider = Provider.of<AuthProvider>(context);
-    authProvider.email = Preferences.email; // para que ya tenga el valor del email a la hora de pulsar el login
+    authProvider.email = Preferences.email; // To remember email user
 
     return TextFormField(
       cursorColor: Theme.of(context).primaryColor,
@@ -118,9 +117,10 @@ class _TextFormEmail extends StatelessWidget {
       decoration: _buildInputDecoration(context),
       onChanged: (value) => authProvider.email = value,
       keyboardType: TextInputType.emailAddress,
-      validator: (value) {  //TODO EL VALIDATOR NO FUNCIONA
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
         String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-        RegExp regExp  = new RegExp(pattern);
+        RegExp regExp  = RegExp(pattern);
         return regExp.hasMatch(value ?? '')
             ? null
             : 'Introduce un correo válido';
@@ -140,6 +140,22 @@ class _TextFormEmail extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           borderSide: BorderSide(
               color: Theme.of(context).primaryColor,
+              width: 1
+          )
+      ),
+
+      errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderSide: BorderSide(
+              color: Colors.red,
+              width: 1
+          )
+      ),
+
+      focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderSide: BorderSide(
+              color: Colors.red,
               width: 1
           )
       ),
@@ -170,6 +186,12 @@ class _TextFormPassword extends StatelessWidget {
       obscureText: authProvider.isObscured,
       onChanged: (value) => authProvider.password = value,
       decoration: _buildInputDecoration(context),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        return (value != null && value.length >= 6)
+            ? null
+            : 'Introduce una contraseña de al menos 6 caracteres';
+      },
     );
   }
 
@@ -190,6 +212,23 @@ class _TextFormPassword extends StatelessWidget {
               width: 1
           )
       ),
+
+        errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderSide: BorderSide(
+                color: Colors.red,
+                width: 1
+            )
+        ),
+
+        focusedErrorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            borderSide: BorderSide(
+                color: Colors.red,
+                width: 1
+            )
+        ),
+
       prefixIcon: Icon(Icons.lock_outline, color: Theme.of(context).primaryColor,),
       labelStyle: TextStyle(color: Theme.of(context).primaryColor),
       labelText: 'Contraseña',
@@ -217,12 +256,11 @@ class _ElevatedButton extends StatelessWidget {
       height: 55,
       width: 270,
       child: ElevatedButton(
-        onPressed: authProvider.isLoading
-            ? null // Bloquea el boton mientras carga datos de firebase
+        onPressed:
+            authProvider.isLoading
+            ? null // Disable button while wait for data from firebase
             : ()  async {
               FocusScope.of(context).unfocus();
-              // final authService = Provider.of<AuthService>(context, listen: false);
-              // final authProvider = Provider.of<AuthProvider>(context, listen: false);
               final String? errorMessage = await authService.login(authProvider.email, authProvider.password);
               if(errorMessage == null){
                 Preferences.email = authProvider.email;
@@ -232,7 +270,7 @@ class _ElevatedButton extends StatelessWidget {
                 authProvider.loginLong = location.longitude;
                 authProvider.loginLocation = await _getCurrentAddress(authProvider.loginLat, authProvider.loginLong);
                 authProvider.isLoading = false;
-                Navigator.pushReplacementNamed(context, 'home'); //para no poder volver atras
+                Navigator.pushReplacementNamed(context, 'home');
               } else{
                 authProvider.isLoading = false;
                 NotificationsService.showSnackbar('Email o contraseña no válidos');
@@ -283,7 +321,7 @@ class _ElevatedButton extends StatelessWidget {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
     Placemark place = placemarks[0];
     String street = place.street.toString();
-    return await street;
+    return street;
   }
 }
 

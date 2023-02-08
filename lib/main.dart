@@ -29,11 +29,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => HistoricProvider()),
         ChangeNotifierProvider(create: (_) => AuthService()),
-        ChangeNotifierProvider(create: (_) => AuthClockIn()),
+        ChangeNotifierProvider(create: (_) => FirebaseProvider()),
 
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: true,
+        debugShowCheckedModeBanner: false,
         title: 'JR CLock',
         theme: mainTheme,
         scaffoldMessengerKey: NotificationsService.messengerKey,
@@ -45,7 +45,6 @@ class MyApp extends StatelessWidget {
           'historic': (_) => const HistoricScreen(),
           'profile': (_) => const ProfileScreen(),
         },
-        //theme: ,
       ),
     );
   }

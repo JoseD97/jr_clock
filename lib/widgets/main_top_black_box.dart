@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Define la estructura del encabezado
-
+// Design of the title
 class MainTopBlackBox extends StatelessWidget {
   final Widget child;
 
@@ -22,7 +21,7 @@ class MainTopBlackBox extends StatelessWidget {
         height: 150,
         padding: const EdgeInsets.all(20),
         child: Center(
-          child: this.child,
+          child: child,
         ),
       ),
     );

@@ -44,7 +44,7 @@ class RegisterScreen extends StatelessWidget {
                   // Forgotten password button
                   TextButton(
                     onPressed: () => Navigator.of(context).pop('login'),
-                    style: ButtonStyle(shape:MaterialStateProperty.all(StadiumBorder())),
+                    style: ButtonStyle(shape:MaterialStateProperty.all(const StadiumBorder())),
                     child: Text('¿Ya tienes una cuenta?', style: TextStyle(color: Theme.of(context).primaryColor)),
                   ),
 
@@ -77,36 +77,38 @@ class _RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Form(
-        child: Column(
-          children: const [
-            // Name
-            _TextFormName(label: 'Nombre'),
+    return Form(
+      child: Column(
+        children: [
+          // Name
+          const _TextFormName(label: 'Nombre'),
 
-            // Last Name
-            SizedBox(height: 25,),
-            _TextFormName(label: 'Apellidos'),
+          // Last Name
+          const SizedBox(height: 25,),
+          const _TextFormName(label: 'Apellidos'),
 
-            // Role
-            SizedBox(height: 25,),
-            _DropDownRole(),
+          // Role
+          const SizedBox(height: 25,),
+          const _DropDownRole(),
 
-            // Email
-            SizedBox(height: 25,),
-            _TextFormEmail(),
+          // Email
+          const SizedBox(height: 25,),
+          const _TextFormEmail(),
 
-            // Password
-            SizedBox(height: 25,),
-            _TextFormPassword(),
+          // Password
+          const SizedBox(height: 25,),
+          const _TextFormPassword(),
 
-            // Button
-            SizedBox(height: 25,),
-            _ElevatedButton(),
-          ],
-        ),
+          // Button
+          const SizedBox(height: 25,),
+          const _ElevatedButton(),
 
+          // Terms and conditions
+          const SizedBox(height: 25,),
+          Text('Al resgistrarte, aceptas nuestros Términos y Condiciones.', style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12)),
+        ],
       ),
+
     );
   }
 }
@@ -131,7 +133,7 @@ class _TextFormName extends StatelessWidget {
       autocorrect: false,
       decoration: _buildInputDecoration(context),
       keyboardType: TextInputType.name,
-      onChanged: (value) => (label == 'name') ? authProvider.name = value : authProvider.lastName = value,
+      onChanged: (value) => (label == 'Nombre') ? authProvider.name = value : authProvider.lastName = value,
     );
   }
 
@@ -160,7 +162,6 @@ class _TextFormName extends StatelessWidget {
 
 
 // Role
-
 class _DropDownRole extends StatelessWidget {
   const _DropDownRole({Key? key}) : super(key: key);
 
@@ -217,9 +218,10 @@ class _TextFormEmail extends StatelessWidget {
       decoration: _buildInputDecoration(context),
       keyboardType: TextInputType.emailAddress,
       onChanged: (value) => authProvider.email = value,
-      validator: (value) {  //TODO EL VALIDATOR NO FUNCIONA
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
         String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-        RegExp regExp  = new RegExp(pattern);
+        RegExp regExp  = RegExp(pattern);
         return regExp.hasMatch(value ?? '')
             ? null
             : 'Introduce un correo válido';
@@ -239,6 +241,22 @@ class _TextFormEmail extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           borderSide: BorderSide(
               color: Theme.of(context).primaryColor,
+              width: 1
+          )
+      ),
+
+      errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderSide: BorderSide(
+              color: Colors.red,
+              width: 1
+          )
+      ),
+
+      focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderSide: BorderSide(
+              color: Colors.red,
               width: 1
           )
       ),
@@ -268,6 +286,12 @@ class _TextFormPassword extends StatelessWidget {
       obscureText: authProvider.isObscured,
       onChanged: (value) => authProvider.password = value,
       decoration: _buildInputDecoration(context),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        return (value != null && value.length >= 6)
+          ? null
+          : 'Introduce una contraseña de al menos 6 caracteres';
+      },
     );
   }
 
@@ -285,6 +309,22 @@ class _TextFormPassword extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           borderSide: BorderSide(
               color: Theme.of(context).primaryColor,
+              width: 1
+          )
+      ),
+
+      errorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderSide: BorderSide(
+              color: Colors.red,
+              width: 1
+          )
+      ),
+
+      focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderSide: BorderSide(
+              color: Colors.red,
               width: 1
           )
       ),
@@ -318,11 +358,11 @@ class _ElevatedButton extends StatelessWidget {
         if(errorMessage == null){
           _createUserFB(email: authProvider.email, name: authProvider.name, lastName: authProvider.lastName, role: authProvider.dropDownItem); // Crea la coleccion en firebase
           Preferences.email = authProvider.email;
+          ClockInFirestore.newUserDoc(context);
           Navigator.pushReplacementNamed(context, 'home'); //para no poder volver atras
         } else{
           NotificationsService.showSnackbar(errorMessage);
         }
-
 
       },
       style: ElevatedButton.styleFrom(

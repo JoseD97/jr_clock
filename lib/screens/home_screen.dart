@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -84,23 +83,23 @@ class _TopBlackBox extends StatelessWidget {
             const SizedBox(width: 20,),
             Expanded(
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('users').doc(Preferences.email).snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(snapshot.data!['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white)),
-                        const SizedBox(height: 5,),
-                        Text(snapshot.data!['role'], style: const TextStyle(fontSize: 18, color: Colors.white)),
-                      ],
-                    );
+                  stream: FirebaseFirestore.instance.collection('users').doc(Preferences.email).snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(snapshot.data!['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: Colors.white)),
+                          const SizedBox(height: 5,),
+                          Text(snapshot.data!['role'], style: const TextStyle(fontSize: 18, color: Colors.white)),
+                        ],
+                      );
 
-                  } else{
-                    return const Center(child: CircularProgressIndicator());
+                    } else{
+                      return const Center(child: CircularProgressIndicator());
+                    }
                   }
-                }
 
               ),
             ),
@@ -189,10 +188,10 @@ class _ClockInSection extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final authClockIn = Provider.of<AuthClockIn>(context);
+    final authClockIn = Provider.of<FirebaseProvider>(context);
 
     return Column(
-      children: [ //TODO MAPA
+      children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: const [
@@ -323,7 +322,7 @@ class _TimeClockIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final authClockIn = Provider.of<AuthClockIn>(context);
+    final authClockIn = Provider.of<FirebaseProvider>(context);
     Stream myStream = currentSigningStream();
     if(authClockIn.reloadStreamBuilder) myStream = currentSigningStream();
 
@@ -346,7 +345,7 @@ class _TimeClockIn extends StatelessWidget {
           const SizedBox(width: 10),
 
           StreamBuilder(
-              //initialData: await ClockInFirestore.getIDLastDocument();,
+            //initialData: await ClockInFirestore.getIDLastDocument();,
               stream: myStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData ) {  // si el documento tiene datos
@@ -386,4 +385,3 @@ class _TimeClockIn extends StatelessWidget {
     yield* FirebaseFirestore.instance.collection(Preferences.email).doc(lastId).snapshots();
   }
 }
-

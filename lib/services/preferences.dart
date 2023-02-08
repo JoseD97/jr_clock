@@ -6,8 +6,6 @@ class Preferences{
 
   static String _email = '';
   static String _fotoId = '';
-  static bool _isWorking = false;
-  static int _lastDayWorked = 0;
 
   static Future initPreferences() async{
     _prefs = await SharedPreferences.getInstance();
@@ -20,7 +18,7 @@ class Preferences{
   static set email(String email){
     _email = email;
     _prefs.setString('email', _email);
-    fotoId = email; //Sets de foto id with the email to be unique
+    fotoId = email; //Set the foto id with the first part of the email to be unique
   }
 
 
@@ -35,23 +33,5 @@ class Preferences{
 
   }
 
-  // Last day worked
-  static int get lastDayWorked{
-    return _prefs.getInt('lastDayWorked') ?? _lastDayWorked;
-  }
-  static set lastDayWorked(int lastDayWorked){
-    _lastDayWorked = lastDayWorked;
-    _prefs.setInt('lastDayWorked', _lastDayWorked);
-  }
-
-
-  // Is working
-  static bool get isWorking{
-    return _prefs.getBool('isWorking') ?? _isWorking;
-  }
-  static set isWorking(bool isWorking){
-    _isWorking = isWorking;
-    _prefs.setBool('isWorking', _isWorking);
-  }
 
 }

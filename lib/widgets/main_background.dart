@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Pone el color negro de fondo
-
+// Black color of background
 class MainBackground extends StatelessWidget {
   final Widget child;
 
@@ -15,7 +14,7 @@ class MainBackground extends StatelessWidget {
       width: double.infinity,
       decoration: _boxDecorationScaffold(),
 
-      child: this.child,
+      child: child,
     );
   }
 

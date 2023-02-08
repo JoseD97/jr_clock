@@ -23,9 +23,6 @@ class CustomCardHistoric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final size =  MediaQuery.of(context).size;
-
     return Container(
       alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -35,14 +32,13 @@ class CustomCardHistoric extends StatelessWidget {
       decoration: _boxDecoration(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           // Date
           Text('$day/$month/$year', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
 
-          SizedBox(width: 20,),
+          const SizedBox(width: 20,),
 
-          // Hout in/out
+          // Hour in/out
           SizedBox(
             height: 50,
             width: 70,
@@ -96,38 +92,6 @@ class CustomCardHistoric extends StatelessWidget {
           )
         ]
       ),
-    );
-  }
-
-
-
-  Row _hourInOut() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children:[
-        Column(
-          children: const [
-            Icon(Icons.arrow_forward_outlined, color: Colors.green,),
-            Icon(Icons.arrow_back_outlined, color: Colors.redAccent,),
-          ],
-        ),
-        Column(
-          children: [
-            Text(hourIn),
-            const SizedBox(height: 10),
-            Text(hourOut),
-          ],
-        ),
-      ]
-    );
-  }
-
-
-  Row _locationInOut() {
-    return Row(
-      children:[
-
-      ]
     );
   }
 

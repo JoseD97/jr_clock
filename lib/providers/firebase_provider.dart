@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AuthClockIn extends ChangeNotifier{
+class FirebaseProvider extends ChangeNotifier{
   bool _isLoading = false;
   bool _reloadStreamBuilder = false;
 

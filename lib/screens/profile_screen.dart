@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:jr_clock/services/clock_in_firestore.dart';
-import 'package:provider/provider.dart';
-import '../providers/providers.dart';
 import '../services/services.dart';
 import '../widgets/profile_image.dart';
 import '../widgets/widgets.dart';
@@ -43,10 +40,7 @@ class ProfileScreen extends StatelessWidget {
 }
 
 
-
-
-
-
+// Profile information
 class _ProfileData extends StatelessWidget {
   const _ProfileData({Key? key}) : super(key: key);
 
@@ -71,18 +65,20 @@ class _ProfileData extends StatelessWidget {
                 _TextForm(label: 'Departamento', value: snapshot.data!['role'], icon: Icons.work_outline),
 
                 const SizedBox(height: 50),
-                const _TextForm(label: 'Email de contacto', value: 'josedcastro97@gmail.com', icon: Icons.email_outlined),
+                const _TextForm(label: 'Email de contacto', value: 'jose@gmail.com', icon: Icons.email_outlined),
               ],
             ),
           );
-        } else return const CircularProgressIndicator.adaptive(strokeWidth: 3, valueColor:AlwaysStoppedAnimation<Color>(Colors.white));
+        } else {
+          return const CircularProgressIndicator.adaptive(strokeWidth: 3, valueColor:AlwaysStoppedAnimation<Color>(Colors.white));
+        }
 
       },
     );
   }
 }
 
-
+// Text design
 class _TextForm extends StatelessWidget {
 
   final String label;
@@ -98,9 +94,6 @@ class _TextForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final authProvider = Provider.of<AuthProvider>(context);
-
     return TextFormField(
       enabled: false,
       initialValue: value,
@@ -118,7 +111,6 @@ class _TextForm extends StatelessWidget {
       prefixIcon: Icon(icon , color: Theme.of(context).primaryColor,),
       labelStyle: TextStyle(color: Theme.of(context).primaryColor),
       labelText: label,
-      //hintText: label,
     );
   }
 }

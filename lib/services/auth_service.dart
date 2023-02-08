@@ -15,7 +15,6 @@ class AuthService extends ChangeNotifier{
 
   //Si retorna algo es un error, sino todo bien
   Future<String?> createUser(String email, String password) async{
-
     // para enviar un post hay que enviarlo como un mapa y luego lo serilizamos
     final Map<String, dynamic> authData = {
       'email': email,
@@ -28,9 +27,9 @@ class AuthService extends ChangeNotifier{
 
     final resp = await http.post(url, body: json.encode(authData)); // realizamos la peticion http y nos devolvera una respuesta
     final Map<String, dynamic> decodedResp = json.decode(resp.body);
-    print(decodedResp);
     if(decodedResp.containsKey('idToken')){ // si hay error durante el registro no devuelve el idtoken
       await storage.write(key: 'token', value: decodedResp['idToken']);
+
       return null;
     } else {
       return decodedResp['error']['message'];
@@ -52,7 +51,6 @@ class AuthService extends ChangeNotifier{
 
     final resp = await http.post(url, body: json.encode(authData)); // realizamos la peticion http, codificamos nuestra data en json y nos devolvera una respuesta
     final Map<String, dynamic> decodedResp = json.decode(resp.body); // la restpuesta la decodificamos y nos resulta un mapa
-    print(decodedResp);
     if(decodedResp.containsKey('idToken')){ // si hay error durante el registro no devuelve el idtoken
       await storage.write(key: 'token', value: decodedResp['idToken']);
       return null;
@@ -66,14 +64,6 @@ class AuthService extends ChangeNotifier{
     await storage.delete(key: 'token');
     return null;
   }
-
-
-  // static Future<String> isAuthenticated() async{
-  //   return await storage.read(key: 'token') ?? '';
-  // }
-  //
-
-
 }
 
 

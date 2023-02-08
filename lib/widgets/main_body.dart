@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Define el diseño del main body
-
+// Design of the body
 class MainBody extends StatelessWidget {
   final Widget child;
   const MainBody({Key? key,
@@ -15,10 +14,9 @@ class MainBody extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(5),
-      //height: size.height,
       width: size.width,
       decoration: _buildBoxDecorationBody(),
-      child: this.child,
+      child: child,
     );
   }
 
