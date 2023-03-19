@@ -1,16 +1,4 @@
-# jr_clock
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+App desarrollada con Flutter y utiliza Authentication, Cloud Firestore y Storage de Firebase.
+Otros paquetes utilizados: provider, http, flutter map, flutter secure storage, geocoding, geolocate, flutter native splash y flutter launcher icons.
+Con esta aplicación los trabajadores se pueden fichar desde cualquier lugar y consultar su historial de fichajes en cualquier momento. Para ello, solo tienen que registrarse. En los fichajes se tiene en cuenta la calle, la hora y el día de entrada y salida.
+Futuras implementaciones: gestión de vacaciones, calendario, ver compañeros conectados...
