@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class AuthService extends ChangeNotifier{
 
   final String _baseUrl = 'identitytoolkit.googleapis.com';
-  final String _firebaseToken = 'AIzaSyCwntt3UtWH2RuhM_skUI6w2nB8m2brgCY';
+  final String _firebaseToken = '';
 
   final storage = new FlutterSecureStorage(); // grabar en la memoria segura del telefono
 
